@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="apt.connexusfall15.activity.DisplayImages">
+    tools:context="apt.connexusfall15.activity.ViewAllStreamsActivity">
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridview"
+        android:id="@+id/gridview_viewAllStreams"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnWidth="90dp"

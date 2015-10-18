@@ -59,18 +59,10 @@
             />
 
         <Button
-            android:id="@+id/view_all_images"
+            android:id="@+id/view_all_streams"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/imagePage"
-            android:onClick="viewAllImages"
+            android:text="@string/viewAll"
             />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/uploadImageActivity"
-            android:clickable="false"
-            android:id="@+id/open_image_upload_page"/>
     </LinearLayout>
 </ScrollView>

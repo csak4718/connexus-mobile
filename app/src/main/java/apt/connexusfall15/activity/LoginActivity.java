@@ -1,4 +1,4 @@
-package apt.connexusfall15;
+package apt.connexusfall15.activity;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -23,6 +23,10 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+
+import apt.connexusfall15.R;
+import apt.connexusfall15.activity.DisplayImages;
+import apt.connexusfall15.utils.Utils;
 
 
 public class LoginActivity extends ActionBarActivity implements
@@ -83,6 +87,7 @@ public class LoginActivity extends ActionBarActivity implements
     private Button mSignOutButton;
     private Button mRevokeButton;
     private TextView mStatus;
+    private Button mViewAllStreamsButton;
     Context context = this;
 
     @Override
@@ -93,6 +98,13 @@ public class LoginActivity extends ActionBarActivity implements
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
         mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
         mStatus = (TextView) findViewById(R.id.sign_in_status);
+        mViewAllStreamsButton = (Button) findViewById(R.id.view_all_streams);
+        mViewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoViewAllStreamsActivity(LoginActivity.this);
+            }
+        });
 
         setGooglePlusButtonText(mSignInButton, "Sign in          ");
 
@@ -216,7 +228,7 @@ public class LoginActivity extends ActionBarActivity implements
         }
     }
 
-    ImageView imageView = null;
+//    ImageView imageView = null;
     private static boolean login_msg_shown = false;
     public static String email = null;
 
@@ -245,19 +257,6 @@ public class LoginActivity extends ActionBarActivity implements
 
 
         mStatus.setText(email + " is currently Signed In");
-
-        Button uploadButton = (Button) findViewById(R.id.open_image_upload_page);
-        uploadButton.setClickable(true);
-
-        uploadButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        Intent intent= new Intent(context, ImageUpload.class);
-//                        startActivity(intent);
-                    }
-                }
-        );
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google
@@ -342,6 +341,7 @@ public class LoginActivity extends ActionBarActivity implements
                     // If the error resolution was successful we should continue
                     // processing errors.
                     mSignInProgress = STATE_SIGN_IN;
+                    Utils.gotoViewAllStreamsActivity(this);
                 } else {
                     // If the error resolution was not successful or the user canceled,
                     // we should stop processing errors.
@@ -364,13 +364,12 @@ public class LoginActivity extends ActionBarActivity implements
         mRevokeButton.setEnabled(false);
 
         mStatus.setText("Signed out");
-        Button uploadButton = (Button) findViewById(R.id.open_image_upload_page);
-        uploadButton.setClickable(false);
 
-        if (imageView != null) {
-            ((ViewGroup) imageView.getParent()).removeView(imageView);
-            imageView = null;
-        }
+
+//        if (imageView != null) {
+//            ((ViewGroup) imageView.getParent()).removeView(imageView);
+//            imageView = null;
+//        }
     }
 
 
@@ -380,11 +379,6 @@ public class LoginActivity extends ActionBarActivity implements
         // We call connect() to attempt to re-establish the connection or get a
         // ConnectionResult that we can attempt to resolve.
         mGoogleApiClient.connect();
-    }
-
-    public void viewAllImages(View view){
-        Intent intent= new Intent(this, DisplayImages.class);
-        startActivity(intent);
     }
 
 

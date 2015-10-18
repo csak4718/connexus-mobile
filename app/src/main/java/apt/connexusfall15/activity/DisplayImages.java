@@ -1,4 +1,4 @@
-package apt.connexusfall15;
+package apt.connexusfall15.activity;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,7 +12,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -25,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import apt.connexusfall15.R;
+import apt.connexusfall15.adapter.ImageAdapter;
 import cz.msebera.android.httpclient.Header;
 
 public class DisplayImages extends ActionBarActivity {
@@ -35,8 +36,9 @@ public class DisplayImages extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_images);
-
-        final String request_url = "http://connexus-fall15.appspot.com/View_all";
+        // TODO
+        // http://connexus-fall15.appspot.com/View_single_mobile
+        final String request_url = "http://localhost:8080/View_single_mobile";
         AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.get(request_url, new AsyncHttpResponseHandler() {
             @Override
