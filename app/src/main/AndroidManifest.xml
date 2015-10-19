@@ -30,6 +30,10 @@
             android:name=".activity.ViewAllStreamsActivity"
             android:label="@string/title_activity_view_all_streams" >
         </activity>
+        <activity
+            android:name=".activity.ImageUploadActivity"
+            android:label="@string/title_activity_image_upload" >
+        </activity>
     </application>
 
 </manifest>

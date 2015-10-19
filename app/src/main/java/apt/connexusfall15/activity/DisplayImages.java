@@ -2,6 +2,7 @@ package apt.connexusfall15.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.BinderThread;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,8 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -26,7 +29,11 @@ import org.json.JSONObject;
 
 import apt.connexusfall15.R;
 import apt.connexusfall15.adapter.ImageAdapter;
+import apt.connexusfall15.utils.Utils;
 import cz.msebera.android.httpclient.Header;
+
+
+
 
 public class DisplayImages extends ActionBarActivity {
     Context context = this;
@@ -36,9 +43,32 @@ public class DisplayImages extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_images);
-        // TODO
-        // http://connexus-fall15.appspot.com/View_single_mobile
-        final String request_url = "http://localhost:8080/View_single_mobile";
+
+        final String streamKey = getIntent().getStringExtra("streamKey");
+        final String streamName = getIntent().getStringExtra("streamName");
+
+        TextView txv_streamName = (TextView) findViewById(R.id.stream_name);
+        txv_streamName.setText("View A Stream: "+streamName);
+        Button viewAllStreams = (Button) findViewById(R.id.btn_view_all_streams);
+        viewAllStreams.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoViewAllStreamsActivity(DisplayImages.this);
+            }
+        });
+        Button imageUpload = (Button) findViewById(R.id.btn_to_upload_activity);
+        imageUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoImageUploadActivity(DisplayImages.this, streamKey, streamName);
+            }
+        });
+
+
+
+        // final String request_url = "http://localhost:8080/View_single_mobile";
+        // final String request_url = "http://connexus-fall15.appspot.com/View_single_mobile";
+        final String request_url = "http://connexus-fall15.appspot.com/View_single_mobile?streamKey="+streamKey;
         AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.get(request_url, new AsyncHttpResponseHandler() {
             @Override

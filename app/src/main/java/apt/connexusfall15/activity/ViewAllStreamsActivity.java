@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import apt.connexusfall15.R;
 import apt.connexusfall15.adapter.ImageAdapter;
+import apt.connexusfall15.utils.Utils;
 import cz.msebera.android.httpclient.Header;
 
 
@@ -44,13 +45,19 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 final ArrayList<String> coverUrls = new ArrayList<String>();
+                final ArrayList<String> streamKeyList = new ArrayList<>();
+                final ArrayList<String> streamNameList = new ArrayList<String>();
                 try {
                     JSONObject jObject = new JSONObject(new String(responseBody));
                     JSONArray displayCoverUrl = jObject.getJSONArray("displayStreams");
+                    JSONArray arrStreamKey = jObject.getJSONArray("streamKeyList");
+                    JSONArray arrStreamName = jObject.getJSONArray("streamNameList");
 
                     for (int i = 0; i < displayCoverUrl.length(); i++) {
                         coverUrls.add(displayCoverUrl.getString(i));
-                        System.out.println(displayCoverUrl.getString(i));
+                        streamKeyList.add(arrStreamKey.getString(i));
+                        streamNameList.add(arrStreamName.getString(i));
+//                        System.out.println(displayCoverUrl.getString(i));
                     }
                     GridView gridview = (GridView) findViewById(R.id.gridview_viewAllStreams);
                     gridview.setAdapter(new ImageAdapter(context, coverUrls));
@@ -58,18 +65,19 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
                                                 int position, long id) {
+                            Utils.gotoDisplayImages(ViewAllStreamsActivity.this, streamKeyList.get(position), streamNameList.get(position));
+
 
 //                            Toast.makeText(context, imageCaps.get(position), Toast.LENGTH_SHORT).show();
 
-                            Dialog imageDialog = new Dialog(context);
-                            imageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            imageDialog.setContentView(R.layout.thumbnail);
-                            ImageView image = (ImageView) imageDialog.findViewById(R.id.thumbnail_IMAGEVIEW);
-
-                            Picasso.with(context).load(coverUrls.get(position)).into(image);
-
-                            imageDialog.show();
-                            
+//                            Dialog imageDialog = new Dialog(context);
+//                            imageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                            imageDialog.setContentView(R.layout.thumbnail);
+//                            ImageView image = (ImageView) imageDialog.findViewById(R.id.thumbnail_IMAGEVIEW);
+//
+//                            Picasso.with(context).load(coverUrls.get(position)).into(image);
+//
+//                            imageDialog.show();
                         }
                     });
                 } catch (JSONException j) {
