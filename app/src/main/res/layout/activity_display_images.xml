@@ -30,10 +30,14 @@
     <Button
         android:id="@+id/btn_to_upload_activity"
         android:layout_width="90dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/uploadImageActivity"
+        />
 
     <Button
         android:id="@+id/btn_view_all_streams"
         android:layout_width="90dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/viewAll"
+        />
 </LinearLayout>
