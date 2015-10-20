@@ -49,6 +49,22 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
             }
         });
 
+        Button searchNearbyButton = (Button) findViewById(R.id.btn_search_nearby);
+        searchNearbyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoSearchNearbyActivity(ViewAllStreamsActivity.this);
+            }
+        });
+
+        Button mySubscribedStreamsButton = (Button) findViewById(R.id.btn_my_subscribed_streams);
+        mySubscribedStreamsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoMySubscribedStreamsActivity(ViewAllStreamsActivity.this);
+            }
+        });
+
 
         // final String request_url = "http://connexus-fall15.appspot.com/View_all_streams_mobile";
         // final String request_url = "http://localhost:8080/View_all_streams_mobile";

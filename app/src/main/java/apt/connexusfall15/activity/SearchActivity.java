@@ -8,7 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -24,6 +27,7 @@ import apt.connexusfall15.adapter.ImageAdapter;
 import apt.connexusfall15.utils.Utils;
 import cz.msebera.android.httpclient.Header;
 
+// TODO: More button. And show stream name under each cover url
 public class SearchActivity extends ActionBarActivity {
     private static final String TAG  = "Search Activity";
     Context context = this;
@@ -33,7 +37,20 @@ public class SearchActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         String searchTerm = getIntent().getStringExtra("searchTerm");
+        search(searchTerm);
 
+        final EditText edt_search = (EditText) findViewById(R.id.edt_search);
+        Button searchButton = (Button) findViewById(R.id.btn_search);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchTerm = edt_search.getText().toString();
+                search(searchTerm);
+            }
+        });
+    }
+
+    public void search(final String searchTerm) {
         final String request_url = "http://connexus-fall15.appspot.com/Search_mobile?searchTerm="+searchTerm;
         AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.get(request_url, new AsyncHttpResponseHandler() {
@@ -47,6 +64,9 @@ public class SearchActivity extends ActionBarActivity {
                     JSONArray displayCoverUrl = jObject.getJSONArray("displayStreams");
                     JSONArray arrStreamKey = jObject.getJSONArray("streamKeyList");
                     JSONArray arrStreamName = jObject.getJSONArray("streamNameList");
+
+                    TextView txvResult = (TextView) findViewById(R.id.txv_result);
+                    txvResult.setText(String.valueOf(displayCoverUrl.length()) + "results for "+ searchTerm + ",\nclick on an image to view stream");
 
                     for (int i = 0; i < displayCoverUrl.length(); i++) {
                         coverUrls.add(displayCoverUrl.getString(i));
@@ -73,10 +93,7 @@ public class SearchActivity extends ActionBarActivity {
                 Log.e(TAG, "There was a problem in retrieving the url : " + error.toString());
             }
         });
-
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

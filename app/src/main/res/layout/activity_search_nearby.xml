@@ -4,19 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="apt.connexusfall15.activity.DisplayImages">
-
-    <TextView
-        android:id="@+id/stream_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:paddingBottom = "20sp"
-        />
+    tools:context="apt.connexusfall15.activity.SearchNearbyActivity"
+    >
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridview"
+        android:id="@+id/gridview_viewAllStreams"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnWidth="90dp"
@@ -28,14 +20,7 @@
         />
 
     <Button
-        android:id="@+id/btn_to_upload_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/uploadImageActivity"
-        />
-
-    <Button
-        android:id="@+id/btn_view_all_streams"
+        android:id="@+id/button_view_all_streams"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/viewAll"

@@ -43,6 +43,14 @@
             android:name=".activity.SearchActivity"
             android:label="@string/title_activity_search" >
         </activity>
+        <activity
+            android:name=".activity.SearchNearbyActivity"
+            android:label="@string/title_activity_search_nearby" >
+        </activity>
+        <activity
+            android:name=".activity.MySubscribedStreamsActivity"
+            android:label="@string/title_activity_my_subscribed_streams" >
+        </activity>
     </application>
 
 </manifest>

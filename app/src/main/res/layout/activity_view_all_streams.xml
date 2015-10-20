@@ -29,4 +29,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/search"/>
+    <Button
+        android:id="@+id/btn_search_nearby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/searchNearby"/>
+    <Button
+        android:id="@+id/btn_my_subscribed_streams"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mySubscribedStreams"/>
+
 </LinearLayout>

@@ -5,7 +5,9 @@ import android.content.Intent;
 
 import apt.connexusfall15.activity.DisplayImages;
 import apt.connexusfall15.activity.ImageUploadActivity;
+import apt.connexusfall15.activity.MySubscribedStreamsActivity;
 import apt.connexusfall15.activity.SearchActivity;
+import apt.connexusfall15.activity.SearchNearbyActivity;
 import apt.connexusfall15.activity.ViewAllStreamsActivity;
 
 /**
@@ -34,6 +36,16 @@ public class Utils {
     public static void gotoSearchActivity(Activity activity, String searchTerm){
         Intent it = new Intent(activity, SearchActivity.class);
         it.putExtra("searchTerm", searchTerm);
+        activity.startActivity(it);
+    }
+
+    public static void gotoSearchNearbyActivity(Activity activity){
+        Intent it = new Intent(activity, SearchNearbyActivity.class);
+        activity.startActivity(it);
+    }
+
+    public static void gotoMySubscribedStreamsActivity(Activity activity){
+        Intent it = new Intent(activity, MySubscribedStreamsActivity.class);
         activity.startActivity(it);
     }
 }

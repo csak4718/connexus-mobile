@@ -38,5 +38,9 @@
     <string name="findStreams">Find streams</string>
     <string name="search">Search</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="searchNearby">Search Nearby Streams</string>
+    <string name="title_activity_search_nearby">SearchNearbyActivity</string>
+    <string name="mySubscribedStreams">My subscribed streams</string>
+    <string name="title_activity_my_subscribed_streams">MySubscribedStreamsActivity</string>
 
 </resources>
