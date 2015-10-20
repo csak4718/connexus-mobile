@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import apt.connexusfall15.activity.DisplayImages;
 import apt.connexusfall15.activity.ImageUploadActivity;
+import apt.connexusfall15.activity.SearchActivity;
 import apt.connexusfall15.activity.ViewAllStreamsActivity;
 
 /**
@@ -27,6 +28,12 @@ public class Utils {
         Intent it = new Intent(activity, ImageUploadActivity.class);
         it.putExtra("streamKey", streamKey);
         it.putExtra("streamName", streamName);
+        activity.startActivity(it);
+    }
+
+    public static void gotoSearchActivity(Activity activity, String searchTerm){
+        Intent it = new Intent(activity, SearchActivity.class);
+        it.putExtra("searchTerm", searchTerm);
         activity.startActivity(it);
     }
 }

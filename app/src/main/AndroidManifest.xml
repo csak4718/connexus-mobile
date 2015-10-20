@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="apt.connexusfall15" >
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -37,6 +38,10 @@
         <activity
             android:name=".activity.ImageUploadActivity"
             android:label="@string/title_activity_image_upload" >
+        </activity>
+        <activity
+            android:name=".activity.SearchActivity"
+            android:label="@string/title_activity_search" >
         </activity>
     </application>
 

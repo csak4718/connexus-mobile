@@ -33,7 +33,10 @@
     <string name="request_server_auth_code">Request server auth code?</string>
     <string name="configuration_error">Error: the value of WEB_CLIENT_ID or SERVER_BASE_URL is not  set correctly. This will cause errors when requesting a server auth code.</string>
     <string name="title_activity_view_all_streams">ViewAllStreamsActivity</string>
-
     <string name="viewAll">View all streams</string>
     <string name="useCamera">Use camera</string>
+    <string name="findStreams">Find streams</string>
+    <string name="search">Search</string>
+    <string name="title_activity_search">SearchActivity</string>
+
 </resources>
