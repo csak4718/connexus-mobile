@@ -1,11 +1,14 @@
 package apt.connexusfall15.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,17 +20,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import apt.connexusfall15.R;
 import cz.msebera.android.httpclient.Header;
@@ -35,17 +42,24 @@ import cz.msebera.android.httpclient.Header;
 public class ImageUploadActivity extends ActionBarActivity {
     private static final String TAG  = "ImageUploadActivity";
     private static final int PICK_IMAGE = 1;
-    private static final int CAMERA = 2;
+    private static final int CAMERA_REQUEST = 2;
     Context context = this;
-    private String streamName;
     private String streamKey;
+    private EditText text;
+    private Uri imgUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
-        streamName = getIntent().getStringExtra("streamName");
         streamKey = getIntent().getStringExtra("streamKey");
+        String streamName = getIntent().getStringExtra("streamName");
+
+
+        text = (EditText) findViewById(R.id.upload_message);
+
+        TextView txv_streamName = (TextView) findViewById(R.id.txv_stream_name);
+        txv_streamName.setText("Upload to: " + streamName);
 
         // Choose image from library
         Button chooseFromLibraryButton = (Button) findViewById(R.id.choose_from_library);
@@ -62,11 +76,45 @@ public class ImageUploadActivity extends ActionBarActivity {
                     }
                 }
         );
+
+        Button useCameraButton = (Button) findViewById(R.id.btn_use_camera);
+        useCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                String fname = "p" + System.currentTimeMillis() + ".jpg";
+                imgUri = Uri.parse("file://" + dir + "/" + fname);
+
+                Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
+
+
+//                File photo;
+//                try
+//                {
+                    // place where to store camera taken picture
+//                    photo = createTemporaryFile("picture", ".jpg");
+//                    mImageUri = Uri.fromFile(photo);
+//                    i.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                    startActivityForResult(i, CAMERA_REQUEST);
+//                }
+//                catch(Exception e)
+//                {
+//                    Log.d(TAG, "Can't create file to take picture!");
+//                    Toast.makeText(ImageUploadActivity.this, "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT).show();
+//                }
+            }
+        });
+    }
+
+    private File createTemporaryFile(String part, String ext) throws Exception {
+        File tempDir= getExternalCacheDir();
+        return File.createTempFile(part, ext, tempDir);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE && data != null && data.getData() != null && resultCode == Activity.RESULT_OK) {
             // User had pick an image.
             Uri selectedImage = data.getData();
 
@@ -92,19 +140,53 @@ public class ImageUploadActivity extends ActionBarActivity {
                         @Override
                         public void onClick(View v) {
                             // Get photo caption
-                            EditText text = (EditText) findViewById(R.id.upload_message); // ??
                             String photoCaption = text.getText().toString();
 
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                             byte[] b = baos.toByteArray();
-                            byte[] encodedImage = Base64.encode(b, Base64.DEFAULT);
+//                            byte[] encodedImage = Base64.encode(b, Base64.DEFAULT); // ?? useless?
 //                            String encodedImageStr = encodedImage.toString(); // ?? useless?
 
-                            postToServer(b, photoCaption); // ?? encodedImage. Original: b
+                            postToServer(b, photoCaption); // argument must be b
                         }
                     }
             );
+        }
+        else if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+//            getContentResolver().notifyChange(mImageUri, null);
+
+
+//            Bundle extras = data.getExtras();
+//            final Bitmap bitmapImage = (Bitmap) extras.get("data");
+//            if (imgUri==null) Log.d("TAG", "imgUri = NULL");
+            final Bitmap bitmapImage = BitmapFactory.decodeFile(imgUri.getPath());
+
+
+
+            ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
+            imgView.setImageBitmap(bitmapImage);
+
+//            Picasso.with(this)
+//                    .load(mImageUri)
+//                    .resize(640, 480)
+//                    .centerInside()
+//                    .into(imgView);
+//            final Bitmap bitmapImage = ((BitmapDrawable) imgView.getDrawable()).getBitmap();
+            Button uploadButton = (Button) findViewById(R.id.upload_to_server);
+            uploadButton.setClickable(true);
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Get photo caption
+                    String photoCaption = text.getText().toString();
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                    byte[] b = baos.toByteArray();
+                    postToServer(b, photoCaption);
+                }
+            });
         }
     }
 
