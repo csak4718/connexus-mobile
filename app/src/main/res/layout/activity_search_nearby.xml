@@ -6,6 +6,12 @@
     android:orientation="vertical"
     tools:context="apt.connexusfall15.activity.SearchNearbyActivity"
     >
+    <TextView
+        android:id="@+id/txv_alert"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/openGPS"/>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview_viewAllStreams"

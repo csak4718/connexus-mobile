@@ -8,7 +8,7 @@
     <string name="uploadImage">Upload Image</string>
     <string name="upload_hint">Add a caption for photo</string>
     <string name="choose_from_library">Choose From Library</string>
-    <string name="title_activity_display_images">DisplayImages</string>
+    <string name="title_activity_view_single_stream">ViewSingleStreamActivity</string>
     <string name="imagePage">View All Images</string>
     <string name="uploadImageActivity"> Upload a new image</string>
     <string name="title_activity_image_upload">ImageUpload</string>
@@ -42,5 +42,6 @@
     <string name="title_activity_search_nearby">SearchNearbyActivity</string>
     <string name="mySubscribedStreams">My subscribed streams</string>
     <string name="title_activity_my_subscribed_streams">MySubscribedStreamsActivity</string>
+    <string name="openGPS">Please open GPS</string>
 
 </resources>

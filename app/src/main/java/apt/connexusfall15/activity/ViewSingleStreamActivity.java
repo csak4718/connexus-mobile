@@ -2,7 +2,6 @@ package apt.connexusfall15.activity;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.BinderThread;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,14 +34,14 @@ import cz.msebera.android.httpclient.Header;
 
 
 
-public class DisplayImages extends ActionBarActivity {
+public class ViewSingleStreamActivity extends ActionBarActivity {
     Context context = this;
     private static final String TAG  = "Display Images";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_images);
+        setContentView(R.layout.activity_view_single_stream);
 
         final String streamKey = getIntent().getStringExtra("streamKey");
         final String streamName = getIntent().getStringExtra("streamName");
@@ -53,14 +52,14 @@ public class DisplayImages extends ActionBarActivity {
         viewAllStreams.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoViewAllStreamsActivity(DisplayImages.this);
+                Utils.gotoViewAllStreamsActivity(ViewSingleStreamActivity.this);
             }
         });
         Button imageUpload = (Button) findViewById(R.id.btn_to_upload_activity);
         imageUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoImageUploadActivity(DisplayImages.this, streamKey, streamName);
+                Utils.gotoImageUploadActivity(ViewSingleStreamActivity.this, streamKey, streamName);
             }
         });
 
@@ -121,7 +120,7 @@ public class DisplayImages extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_display_images, menu);
+        getMenuInflater().inflate(R.menu.menu_view_single_stream, menu);
         return true;
     }
 

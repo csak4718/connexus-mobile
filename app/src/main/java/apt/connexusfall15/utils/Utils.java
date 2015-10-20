@@ -3,7 +3,7 @@ package apt.connexusfall15.utils;
 import android.app.Activity;
 import android.content.Intent;
 
-import apt.connexusfall15.activity.DisplayImages;
+import apt.connexusfall15.activity.ViewSingleStreamActivity;
 import apt.connexusfall15.activity.ImageUploadActivity;
 import apt.connexusfall15.activity.MySubscribedStreamsActivity;
 import apt.connexusfall15.activity.SearchActivity;
@@ -20,7 +20,7 @@ public class Utils {
     }
 
     public static void gotoDisplayImages(Activity activity, String streamKey, String streamName){
-        Intent it = new Intent(activity, DisplayImages.class);
+        Intent it = new Intent(activity, ViewSingleStreamActivity.class);
         it.putExtra("streamKey", streamKey);
         it.putExtra("streamName", streamName);
         activity.startActivity(it);

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="apt.connexusfall15.activity.DisplayImages">
+    tools:context="apt.connexusfall15.activity.ViewSingleStreamActivity">
 
     <TextView
         android:id="@+id/stream_name"
