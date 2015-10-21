@@ -1,5 +1,6 @@
 package apt.connexusfall15.activity;
 
+import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,11 +11,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 
 import apt.connexusfall15.R;
+import apt.connexusfall15.adapter.ImageAdapter;
 import apt.connexusfall15.utils.Utils;
+import cz.msebera.android.httpclient.Header;
 
 public class SearchNearbyActivity extends ActionBarActivity implements LocationListener{
     private static final String TAG  = "Search Nearby Activity";
@@ -24,6 +41,7 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
     private double latitude;
     private double longitude;
     private TextView txvAlert;
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +72,62 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            Log.d(TAG, "Latitude: " + String.valueOf(latitude));
-            Log.d(TAG, "Longitude: " + String.valueOf(longitude));
+//            Log.d(TAG, "Latitude: " + String.valueOf(latitude));
+//            Log.d(TAG, "Longitude: " + String.valueOf(longitude));
+
+            postToServer();
+
         }
         else txvAlert.setVisibility(View.VISIBLE);
 
 
+    }
+
+    private void postToServer(){
+        String url = "http://connexus-fall15.appspot.com/Search_Nearby_mobile?latitude="+String.valueOf(latitude)+"&longitude="+String.valueOf(longitude);
+        Log.d(TAG, String.valueOf(latitude));
+        Log.d(TAG, String.valueOf(longitude));
+//        RequestParams params = new RequestParams();
+//        params.put("latitude", String.valueOf(latitude));
+//        params.put("longitude", String.valueOf(longitude));
+
+        AsyncHttpClient client = new AsyncHttpClient();
+//        client.post(url, params, new AsyncHttpResponseHandler() {
+        client.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                final ArrayList<String> imgUrls = new ArrayList<String>();
+                final ArrayList<String> streamKeyList = new ArrayList<>();
+                final ArrayList<String> streamNameList = new ArrayList<String>();
+                try {
+                    JSONObject jObject = new JSONObject(new String(response));
+                    JSONArray displayImgUrl = jObject.getJSONArray("displayImages");
+                    JSONArray arrStreamKey = jObject.getJSONArray("streamKeyList");
+                    JSONArray arrStreamName = jObject.getJSONArray("streamNameList");
+
+                    for (int i = 0; i < displayImgUrl.length(); i++) {
+                        imgUrls.add(displayImgUrl.getString(i));
+                        streamKeyList.add(arrStreamKey.getString(i));
+                        streamNameList.add(arrStreamName.getString(i));
+                    }
+                    GridView gridview = (GridView) findViewById(R.id.gridview_search_nearby);
+                    gridview.setAdapter(new ImageAdapter(context, imgUrls));
+                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View v,
+                                                int position, long id) {
+                            Utils.gotoViewSingleStreamActivity(SearchNearbyActivity.this, streamKeyList.get(position), streamNameList.get(position));
+                        }
+                    });
+                } catch (JSONException j) {
+                    System.out.println("JSON Error");
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                Log.e("postToServer", e.toString());
+            }
+        });
     }
 
     @Override
@@ -73,8 +141,8 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
-        Log.d(TAG, "LatitudeCHANGED: " + String.valueOf(latitude));
-        Log.d(TAG, "LongitudeCHANGED: " + String.valueOf(longitude));
+//        Log.d(TAG, "LatitudeCHANGED: " + String.valueOf(latitude));
+//        Log.d(TAG, "LongitudeCHANGED: " + String.valueOf(longitude));
     }
 
     @Override

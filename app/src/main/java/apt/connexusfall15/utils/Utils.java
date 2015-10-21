@@ -19,7 +19,7 @@ public class Utils {
         activity.startActivity(it);
     }
 
-    public static void gotoDisplayImages(Activity activity, String streamKey, String streamName){
+    public static void gotoViewSingleStreamActivity(Activity activity, String streamKey, String streamName){
         Intent it = new Intent(activity, ViewSingleStreamActivity.class);
         it.putExtra("streamKey", streamKey);
         it.putExtra("streamName", streamName);

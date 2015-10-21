@@ -95,19 +95,7 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
                                                 int position, long id) {
-                            Utils.gotoDisplayImages(ViewAllStreamsActivity.this, streamKeyList.get(position), streamNameList.get(position));
-
-
-//                            Toast.makeText(context, imageCaps.get(position), Toast.LENGTH_SHORT).show();
-
-//                            Dialog imageDialog = new Dialog(context);
-//                            imageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                            imageDialog.setContentView(R.layout.thumbnail);
-//                            ImageView image = (ImageView) imageDialog.findViewById(R.id.thumbnail_IMAGEVIEW);
-//
-//                            Picasso.with(context).load(coverUrls.get(position)).into(image);
-//
-//                            imageDialog.show();
+                            Utils.gotoViewSingleStreamActivity(ViewAllStreamsActivity.this, streamKeyList.get(position), streamNameList.get(position));
                         }
                     });
                 } catch (JSONException j) {

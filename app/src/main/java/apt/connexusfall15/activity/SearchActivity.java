@@ -80,7 +80,7 @@ public class SearchActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
                                                 int position, long id) {
-                            Utils.gotoDisplayImages(SearchActivity.this, streamKeyList.get(position), streamNameList.get(position));
+                            Utils.gotoViewSingleStreamActivity(SearchActivity.this, streamKeyList.get(position), streamNameList.get(position));
                         }
                     });
                 } catch (JSONException j) {
