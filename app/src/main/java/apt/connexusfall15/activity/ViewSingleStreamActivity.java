@@ -42,7 +42,7 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_stream);
-
+        final String userEmail = getIntent().getStringExtra("userEmail");
         final String streamKey = getIntent().getStringExtra("streamKey");
         final String streamName = getIntent().getStringExtra("streamName");
 
@@ -52,10 +52,11 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
         viewAllStreams.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoViewAllStreamsActivity(ViewSingleStreamActivity.this);
+//                Utils.gotoViewAllStreamsActivity(ViewSingleStreamActivity.this, userEmail);
+                finish();
             }
         });
-        Button imageUpload = (Button) findViewById(R.id.btn_to_upload_activity);
+        final Button imageUpload = (Button) findViewById(R.id.btn_to_upload_activity);
         imageUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +78,14 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
                 try {
                     JSONObject jObject = new JSONObject(new String(response));
                     JSONArray displayImages = jObject.getJSONArray("displayImages");
+                    String ownerEmail = jObject.getString("ownerEmail");
+//                    Log.d(TAG, "UserEmail: "+userEmail);
+                    if (userEmail != null){
+                        if (userEmail.equals(ownerEmail)) imageUpload.setVisibility(View.VISIBLE);
+                        else imageUpload.setVisibility(View.GONE);
+                    }
+                    else imageUpload.setVisibility(View.GONE);
+
 //                    JSONArray displayCaption = jObject.getJSONArray("imageCaptionList");
 
                     for (int i = 0; i < displayImages.length(); i++) {

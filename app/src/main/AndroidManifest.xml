@@ -53,6 +53,10 @@
             android:name=".activity.MySubscribedStreamsActivity"
             android:label="@string/title_activity_my_subscribed_streams" >
         </activity>
+        <activity
+            android:name=".activity.CameraActivity"
+            android:label="@string/title_activity_camera" >
+        </activity>
     </application>
 
 </manifest>

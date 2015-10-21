@@ -38,6 +38,7 @@
         android:id="@+id/btn_my_subscribed_streams"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/mySubscribedStreams"/>
+        android:text="@string/mySubscribedStreams"
+        android:visibility="gone"/>
 
 </LinearLayout>

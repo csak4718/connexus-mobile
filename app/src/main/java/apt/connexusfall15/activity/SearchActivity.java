@@ -36,8 +36,9 @@ public class SearchActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        final String userEmail = getIntent().getStringExtra("userEmail");
         String searchTerm = getIntent().getStringExtra("searchTerm");
-        search(searchTerm);
+        search(searchTerm, userEmail);
 
         final EditText edt_search = (EditText) findViewById(R.id.edt_search);
         Button searchButton = (Button) findViewById(R.id.btn_search);
@@ -45,12 +46,12 @@ public class SearchActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 String searchTerm = edt_search.getText().toString();
-                search(searchTerm);
+                search(searchTerm, userEmail);
             }
         });
     }
 
-    public void search(final String searchTerm) {
+    public void search(final String searchTerm, final String userEmail) {
         final String request_url = "http://connexus-fall15.appspot.com/Search_mobile?searchTerm="+searchTerm;
         AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.get(request_url, new AsyncHttpResponseHandler() {
@@ -80,7 +81,7 @@ public class SearchActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
                                                 int position, long id) {
-                            Utils.gotoViewSingleStreamActivity(SearchActivity.this, streamKeyList.get(position), streamNameList.get(position));
+                            Utils.gotoViewSingleStreamActivity(SearchActivity.this, streamKeyList.get(position), streamNameList.get(position), userEmail);
                         }
                     });
                 } catch (JSONException j) {

@@ -39,13 +39,15 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_streams);
+        final String userEmail = getIntent().getStringExtra("userEmail");
+
         final EditText edt_search = (EditText) findViewById(R.id.edt_search);
         Button searchButton = (Button) findViewById(R.id.btn_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchTerm = edt_search.getText().toString();
-                Utils.gotoSearchActivity(ViewAllStreamsActivity.this, searchTerm);
+                Utils.gotoSearchActivity(ViewAllStreamsActivity.this, searchTerm, userEmail);
             }
         });
 
@@ -54,7 +56,7 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
         searchNearbyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoSearchNearbyActivity(ViewAllStreamsActivity.this);
+                Utils.gotoSearchNearbyActivity(ViewAllStreamsActivity.this, userEmail);
             }
         });
 
@@ -62,9 +64,13 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
         mySubscribedStreamsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoMySubscribedStreamsActivity(ViewAllStreamsActivity.this);
+//                Utils.gotoMySubscribedStreamsActivity(ViewAllStreamsActivity.this, userEmail);
+                // TODO
+
             }
         });
+        if (userEmail!=null) mySubscribedStreamsButton.setVisibility(View.VISIBLE);
+        else mySubscribedStreamsButton.setVisibility(View.GONE);
 
 
         // final String request_url = "http://connexus-fall15.appspot.com/View_all_streams_mobile";
@@ -95,7 +101,7 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
                                                 int position, long id) {
-                            Utils.gotoViewSingleStreamActivity(ViewAllStreamsActivity.this, streamKeyList.get(position), streamNameList.get(position));
+                            Utils.gotoViewSingleStreamActivity(ViewAllStreamsActivity.this, streamKeyList.get(position), streamNameList.get(position), userEmail);
                         }
                     });
                 } catch (JSONException j) {

@@ -47,23 +47,27 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_nearby);
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         txvAlert = (TextView) findViewById(R.id.txv_alert);
 
-        Button viewAllStreamsButton = (Button) findViewById(R.id.button_view_all_streams);
-        viewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.gotoViewAllStreamsActivity(SearchNearbyActivity.this);
-            }
-        });
+
 
     }
 
     @Override
     protected void onResume(){
         super.onResume();
+        final String userEmail = getIntent().getStringExtra("userEmail");
+        Button viewAllStreamsButton = (Button) findViewById(R.id.button_view_all_streams);
+        viewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Utils.gotoViewAllStreamsActivity(SearchNearbyActivity.this, userEmail);
+                finish();
+            }
+        });
 
         // find the best provider
         String best = locationManager.getBestProvider(new Criteria(), true);
@@ -75,7 +79,7 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
 //            Log.d(TAG, "Latitude: " + String.valueOf(latitude));
 //            Log.d(TAG, "Longitude: " + String.valueOf(longitude));
 
-            postToServer();
+            postToServer(userEmail);
 
         }
         else txvAlert.setVisibility(View.VISIBLE);
@@ -83,16 +87,12 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
 
     }
 
-    private void postToServer(){
+    private void postToServer(final String userEmail){
         String url = "http://connexus-fall15.appspot.com/Search_Nearby_mobile?latitude="+String.valueOf(latitude)+"&longitude="+String.valueOf(longitude);
-        Log.d(TAG, String.valueOf(latitude));
-        Log.d(TAG, String.valueOf(longitude));
-//        RequestParams params = new RequestParams();
-//        params.put("latitude", String.valueOf(latitude));
-//        params.put("longitude", String.valueOf(longitude));
+//        Log.d(TAG, String.valueOf(latitude));
+//        Log.d(TAG, String.valueOf(longitude));
 
         AsyncHttpClient client = new AsyncHttpClient();
-//        client.post(url, params, new AsyncHttpResponseHandler() {
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
@@ -116,7 +116,7 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
                                                 int position, long id) {
-                            Utils.gotoViewSingleStreamActivity(SearchNearbyActivity.this, streamKeyList.get(position), streamNameList.get(position));
+                            Utils.gotoViewSingleStreamActivity(SearchNearbyActivity.this, streamKeyList.get(position), streamNameList.get(position), userEmail);
                         }
                     });
                 } catch (JSONException j) {

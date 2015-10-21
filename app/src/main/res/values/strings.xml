@@ -43,5 +43,6 @@
     <string name="mySubscribedStreams">My subscribed streams</string>
     <string name="title_activity_my_subscribed_streams">MySubscribedStreamsActivity</string>
     <string name="openGPS">Please open GPS</string>
+    <string name="title_activity_camera">CameraActivity</string>
 
 </resources>

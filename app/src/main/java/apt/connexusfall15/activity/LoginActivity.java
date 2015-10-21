@@ -31,6 +31,7 @@ public class LoginActivity extends ActionBarActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
     private static final String TAG = "LoginActivity";
+    private boolean hasSignedIn;
     private static final int STATE_DEFAULT = 0;
     private static final int STATE_SIGN_IN = 1;
     private static final int STATE_IN_PROGRESS = 2;
@@ -85,12 +86,12 @@ public class LoginActivity extends ActionBarActivity implements
     private Button mRevokeButton;
     private TextView mStatus;
     private Button mViewAllStreamsButton;
-    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        hasSignedIn = false;
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
         mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
@@ -99,7 +100,7 @@ public class LoginActivity extends ActionBarActivity implements
         mViewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoViewAllStreamsActivity(LoginActivity.this);
+                Utils.gotoViewAllStreamsActivity(LoginActivity.this, email);
             }
         });
 
@@ -191,22 +192,28 @@ public class LoginActivity extends ActionBarActivity implements
                         "You need internet access to perform this action.", Toast.LENGTH_SHORT).show();
                 return;
             }
+//            mGoogleApiClient.connect();
             switch (v.getId()) {
                 case R.id.sign_in_button:
                     resolveSignInError();
+//                    mGoogleApiClient.connect();
+//                    Utils.gotoViewAllStreamsActivity(this, email);
                     break;
                 case R.id.sign_out_button:
                     // We clear the default account on sign out so that Google Play
                     // services will not return an onConnected callback without user
                     // interaction.
+//                    mGoogleApiClient.connect();
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
                     mGoogleApiClient.disconnect();
                     mGoogleApiClient.connect();
                     email = null;
                     Toast.makeText(getApplicationContext(), "You are now signed out", Toast.LENGTH_SHORT).show();
                     login_msg_shown = false;
+                    hasSignedIn = false;
                     break;
                 case R.id.revoke_access_button:
+//                    mGoogleApiClient.connect();
                     // After we revoke permissions for the user with a GoogleApiClient
                     // instance, we must discard it and create a new one.
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
@@ -220,6 +227,7 @@ public class LoginActivity extends ActionBarActivity implements
                     email = null;
                     Toast.makeText(getApplicationContext(), "You've just revoked Connexus to access your basic account info.", Toast.LENGTH_LONG).show();
                     login_msg_shown = false;
+                    hasSignedIn = false;
                     break;
             }
         }
@@ -227,7 +235,7 @@ public class LoginActivity extends ActionBarActivity implements
 
 //    ImageView imageView = null;
     private static boolean login_msg_shown = false;
-    public static String email = null;
+    private static String email = null;
 
     /* onConnected is called when our Activity successfully connects to Google
      * Play services.  onConnected indicates that an account was selected on the
@@ -254,6 +262,11 @@ public class LoginActivity extends ActionBarActivity implements
 
 
         mStatus.setText(email + " is currently Signed In");
+        if (!hasSignedIn){
+            Utils.gotoViewAllStreamsActivity(this, email);
+            hasSignedIn = true;
+        }
+
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google
@@ -338,7 +351,8 @@ public class LoginActivity extends ActionBarActivity implements
                     // If the error resolution was successful we should continue
                     // processing errors.
                     mSignInProgress = STATE_SIGN_IN;
-                    Utils.gotoViewAllStreamsActivity(this);
+
+//                    Utils.gotoViewAllStreamsActivity(this, email);
                 } else {
                     // If the error resolution was not successful or the user canceled,
                     // we should stop processing errors.
@@ -352,6 +366,7 @@ public class LoginActivity extends ActionBarActivity implements
                 }
                 break;
         }
+//        Utils.gotoViewAllStreamsActivity(this, email);
     }
 
     private void onSignedOut() {

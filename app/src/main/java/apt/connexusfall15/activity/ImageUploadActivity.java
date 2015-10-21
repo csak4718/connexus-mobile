@@ -34,6 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import apt.connexusfall15.R;
+import apt.connexusfall15.utils.Utils;
 import cz.msebera.android.httpclient.Header;
 
 public class ImageUploadActivity extends ActionBarActivity implements LocationListener {
@@ -92,6 +93,14 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
                 Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 i.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
                 startActivityForResult(i, CAMERA_REQUEST);
+            }
+        });
+
+        Button cameraButton = (Button) findViewById(R.id.btn_camera);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoCameraActivity(ImageUploadActivity.this);
             }
         });
     }
