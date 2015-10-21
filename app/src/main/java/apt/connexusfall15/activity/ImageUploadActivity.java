@@ -6,13 +6,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,20 +28,15 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 import apt.connexusfall15.R;
 import cz.msebera.android.httpclient.Header;
 
-public class ImageUploadActivity extends ActionBarActivity {
+public class ImageUploadActivity extends ActionBarActivity implements LocationListener {
     private static final String TAG  = "ImageUploadActivity";
     private static final int PICK_IMAGE = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -47,6 +44,12 @@ public class ImageUploadActivity extends ActionBarActivity {
     private String streamKey;
     private EditText text;
     private Uri imgUri;
+    private final static int MIN_TIME = 5000;
+    private final static float MIN_DIST = 5;
+    LocationManager locationManager;
+    private double latitude;
+    private double longitude;
+    private TextView txvAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,8 @@ public class ImageUploadActivity extends ActionBarActivity {
         streamKey = getIntent().getStringExtra("streamKey");
         String streamName = getIntent().getStringExtra("streamName");
 
-
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        txvAlert = (TextView) findViewById(R.id.txv_alert);
         text = (EditText) findViewById(R.id.upload_message);
 
         TextView txv_streamName = (TextView) findViewById(R.id.txv_stream_name);
@@ -87,29 +91,32 @@ public class ImageUploadActivity extends ActionBarActivity {
 
                 Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 i.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
-
-
-//                File photo;
-//                try
-//                {
-                    // place where to store camera taken picture
-//                    photo = createTemporaryFile("picture", ".jpg");
-//                    mImageUri = Uri.fromFile(photo);
-//                    i.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                    startActivityForResult(i, CAMERA_REQUEST);
-//                }
-//                catch(Exception e)
-//                {
-//                    Log.d(TAG, "Can't create file to take picture!");
-//                    Toast.makeText(ImageUploadActivity.this, "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT).show();
-//                }
+                startActivityForResult(i, CAMERA_REQUEST);
             }
         });
     }
 
-    private File createTemporaryFile(String part, String ext) throws Exception {
-        File tempDir= getExternalCacheDir();
-        return File.createTempFile(part, ext, tempDir);
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        // find the best provider
+        String best = locationManager.getBestProvider(new Criteria(), true);
+        if (best != null){
+            locationManager.requestLocationUpdates(best, MIN_TIME, MIN_DIST, this);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+//            Log.d(TAG, "Latitude: " + String.valueOf(latitude));
+//            Log.d(TAG, "Longitude: " + String.valueOf(longitude));
+        }
+        else txvAlert.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        locationManager.removeUpdates(this);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,34 +152,16 @@ public class ImageUploadActivity extends ActionBarActivity {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                             byte[] b = baos.toByteArray();
-//                            byte[] encodedImage = Base64.encode(b, Base64.DEFAULT); // ?? useless?
-//                            String encodedImageStr = encodedImage.toString(); // ?? useless?
-
                             postToServer(b, photoCaption); // argument must be b
                         }
                     }
             );
         }
         else if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-//            getContentResolver().notifyChange(mImageUri, null);
-
-
-//            Bundle extras = data.getExtras();
-//            final Bitmap bitmapImage = (Bitmap) extras.get("data");
-//            if (imgUri==null) Log.d("TAG", "imgUri = NULL");
             final Bitmap bitmapImage = BitmapFactory.decodeFile(imgUri.getPath());
-
-
-
             ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
             imgView.setImageBitmap(bitmapImage);
 
-//            Picasso.with(this)
-//                    .load(mImageUri)
-//                    .resize(640, 480)
-//                    .centerInside()
-//                    .into(imgView);
-//            final Bitmap bitmapImage = ((BitmapDrawable) imgView.getDrawable()).getBitmap();
             Button uploadButton = (Button) findViewById(R.id.upload_to_server);
             uploadButton.setClickable(true);
             uploadButton.setOnClickListener(new View.OnClickListener() {
@@ -190,42 +179,17 @@ public class ImageUploadActivity extends ActionBarActivity {
         }
     }
 
-//    private void getUploadURL(final byte[] encodedImage, final String photoCaption){
-//        AsyncHttpClient httpClient = new AsyncHttpClient();
-//        String request_url="http://connexus-fall15.appspot.com/getUploadURL";
-//
-//        httpClient.get(request_url, new AsyncHttpResponseHandler() {
-//            String upload_url;
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-//                try {
-//                    JSONObject jObject = new JSONObject(new String(response));
-//                    upload_url = jObject.getString("upload_url");
-//                    postToServer(encodedImage, photoCaption, upload_url);
-//
-//                }
-//                catch(JSONException j){
-//                    System.out.println("JSON Error");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-//                Log.e("Get_serving_url", "There was a problem in retrieving the url : " + e.toString());
-//            }
-//        });
-//    }
-
     private void postToServer(byte[] encodedImage, String photoCaption){
-//        String url = "http://connexus-fall15.appspot.com/Add_Image_mobile";
         String url = "http://connexus-fall15.appspot.com/Add_Image_mobile?streamKey="+streamKey;
+        String imgLocation = String.valueOf(latitude)+", "+String.valueOf(longitude);
+
         RequestParams params = new RequestParams();
         params.put("file", new ByteArrayInputStream(encodedImage));
         params.put("photoCaption", photoCaption);
-//        params.put("streamKey", streamKey);
+        params.put("imgLocation", imgLocation);
         AsyncHttpClient client = new AsyncHttpClient();
 
-        Log.d(TAG, url);
+//        Log.d(TAG, url);
 
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -238,6 +202,30 @@ public class ImageUploadActivity extends ActionBarActivity {
                 Log.e("Posting_to_blob","There was a problem in retrieving the url : " + e.toString());
             }
         });
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
+//        Log.d(TAG, "LatitudeCHANGED: " + String.valueOf(latitude));
+//        Log.d(TAG, "LongitudeCHANGED: " + String.valueOf(longitude));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
 

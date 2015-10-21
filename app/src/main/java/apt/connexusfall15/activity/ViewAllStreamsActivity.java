@@ -49,6 +49,7 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
             }
         });
 
+
         Button searchNearbyButton = (Button) findViewById(R.id.btn_search_nearby);
         searchNearbyButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -36,7 +36,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class ViewSingleStreamActivity extends ActionBarActivity {
     Context context = this;
-    private static final String TAG  = "Display Images";
+    private static final String TAG  = "ViewSingleStreamActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
                             imageDialog.setContentView(R.layout.thumbnail);
                             ImageView image = (ImageView) imageDialog.findViewById(R.id.thumbnail_IMAGEVIEW);
 
-                            Picasso.with(context).load(imageURLs.get(position)).into(image);
+                            Picasso.with(context).load(imageURLs.get(position)).resize(300, 300).centerCrop().into(image);
 
                             imageDialog.show();
                         }
