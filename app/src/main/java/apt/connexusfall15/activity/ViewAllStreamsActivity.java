@@ -34,12 +34,16 @@ import cz.msebera.android.httpclient.Header;
 public class ViewAllStreamsActivity extends ActionBarActivity {
     private static final String TAG  = "View All Streams";
     Context context = this;
-
+    private String userEmail_global;
+    private Button mySubscribedStreamsButton;
+    private Button backToViewAll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_streams);
         final String userEmail = getIntent().getStringExtra("userEmail");
+
+        userEmail_global = userEmail;
 
         final EditText edt_search = (EditText) findViewById(R.id.edt_search);
         Button searchButton = (Button) findViewById(R.id.btn_search);
@@ -60,19 +64,42 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
             }
         });
 
-        Button mySubscribedStreamsButton = (Button) findViewById(R.id.btn_my_subscribed_streams);
+        mySubscribedStreamsButton = (Button) findViewById(R.id.btn_my_subscribed_streams);
         mySubscribedStreamsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Utils.gotoMySubscribedStreamsActivity(ViewAllStreamsActivity.this, userEmail);
-                // TODO
-
+                postToServer_subscribe(userEmail);
+                mySubscribedStreamsButton.setVisibility(View.GONE);
+                backToViewAll.setVisibility(View.VISIBLE);
             }
         });
         if (userEmail!=null) mySubscribedStreamsButton.setVisibility(View.VISIBLE);
         else mySubscribedStreamsButton.setVisibility(View.GONE);
 
+        backToViewAll = (Button) findViewById(R.id.btn_back_to_view_all);
+        backToViewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postToServer_veiwAll(userEmail);
+                backToViewAll.setVisibility(View.GONE);
+                mySubscribedStreamsButton.setVisibility(View.VISIBLE);
+            }
+        });
 
+
+        postToServer_veiwAll(userEmail);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        backToViewAll.setVisibility(View.GONE);
+        mySubscribedStreamsButton.setVisibility(View.VISIBLE);
+        postToServer_veiwAll(userEmail_global);
+    }
+
+    private void postToServer_veiwAll(final String userEmail){
         // final String request_url = "http://connexus-fall15.appspot.com/View_all_streams_mobile";
         // final String request_url = "http://localhost:8080/View_all_streams_mobile";
         final String request_url = "http://connexus-fall15.appspot.com/View_all_streams_mobile";
@@ -116,6 +143,54 @@ public class ViewAllStreamsActivity extends ActionBarActivity {
         });
     }
 
+    private void postToServer_subscribe(String userEmail) {
+        final String request_url = "http://connexus-fall15.appspot.com/MySubscribedImages_mobile?userEmail="+userEmail;
+        AsyncHttpClient httpClient = new AsyncHttpClient();
+        httpClient.get(request_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                final ArrayList<String> imageURLs = new ArrayList<String>();
+//                final ArrayList<String> imageCaps = new ArrayList<String>();
+                try {
+                    JSONObject jObject = new JSONObject(new String(responseBody));
+                    JSONArray displayImages = jObject.getJSONArray("displayImages");
+//                    JSONArray displayCaption = jObject.getJSONArray("imageCaptionList");
+
+                    for (int i = 0; i < displayImages.length(); i++) {
+                        imageURLs.add(displayImages.getString(i));
+//                        imageCaps.add(displayCaption.getString(i));
+                        System.out.println(displayImages.getString(i));
+                    }
+                    GridView gridview = (GridView) findViewById(R.id.gridview_viewAllStreams);
+                    gridview.setAdapter(new ImageAdapter(context, imageURLs));
+                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View v,
+                                                int position, long id) {
+
+//                            Toast.makeText(context, imageCaps.get(position), Toast.LENGTH_SHORT).show();
+
+                            Dialog imageDialog = new Dialog(context);
+                            imageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            imageDialog.setContentView(R.layout.thumbnail);
+                            ImageView image = (ImageView) imageDialog.findViewById(R.id.thumbnail_IMAGEVIEW);
+
+                            Picasso.with(context).load(imageURLs.get(position)).resize(300, 300).centerCrop().into(image);
+
+                            imageDialog.show();
+                        }
+                    });
+                } catch (JSONException j) {
+                    System.out.println("JSON Error");
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e(TAG, "There was a problem in retrieving the url : " + error.toString());
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

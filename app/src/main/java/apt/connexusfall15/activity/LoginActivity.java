@@ -85,7 +85,6 @@ public class LoginActivity extends ActionBarActivity implements
     private Button mSignOutButton;
     private Button mRevokeButton;
     private TextView mStatus;
-    private Button mViewAllStreamsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,7 @@ public class LoginActivity extends ActionBarActivity implements
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
         mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
         mStatus = (TextView) findViewById(R.id.sign_in_status);
-        mViewAllStreamsButton = (Button) findViewById(R.id.view_all_streams);
+        Button mViewAllStreamsButton = (Button) findViewById(R.id.view_all_streams);
         mViewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,18 +191,14 @@ public class LoginActivity extends ActionBarActivity implements
                         "You need internet access to perform this action.", Toast.LENGTH_SHORT).show();
                 return;
             }
-//            mGoogleApiClient.connect();
             switch (v.getId()) {
                 case R.id.sign_in_button:
                     resolveSignInError();
-//                    mGoogleApiClient.connect();
-//                    Utils.gotoViewAllStreamsActivity(this, email);
                     break;
                 case R.id.sign_out_button:
                     // We clear the default account on sign out so that Google Play
                     // services will not return an onConnected callback without user
                     // interaction.
-//                    mGoogleApiClient.connect();
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
                     mGoogleApiClient.disconnect();
                     mGoogleApiClient.connect();
@@ -213,7 +208,6 @@ public class LoginActivity extends ActionBarActivity implements
                     hasSignedIn = false;
                     break;
                 case R.id.revoke_access_button:
-//                    mGoogleApiClient.connect();
                     // After we revoke permissions for the user with a GoogleApiClient
                     // instance, we must discard it and create a new one.
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
@@ -351,8 +345,6 @@ public class LoginActivity extends ActionBarActivity implements
                     // If the error resolution was successful we should continue
                     // processing errors.
                     mSignInProgress = STATE_SIGN_IN;
-
-//                    Utils.gotoViewAllStreamsActivity(this, email);
                 } else {
                     // If the error resolution was not successful or the user canceled,
                     // we should stop processing errors.
@@ -366,7 +358,6 @@ public class LoginActivity extends ActionBarActivity implements
                 }
                 break;
         }
-//        Utils.gotoViewAllStreamsActivity(this, email);
     }
 
     private void onSignedOut() {
