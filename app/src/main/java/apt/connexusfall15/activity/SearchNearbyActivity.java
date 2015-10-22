@@ -68,7 +68,6 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
         viewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Utils.gotoViewAllStreamsActivity(SearchNearbyActivity.this, userEmail);
                 finish();
             }
         });

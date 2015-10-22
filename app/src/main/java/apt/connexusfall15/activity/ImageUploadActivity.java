@@ -11,7 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Environment;
+
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -40,12 +40,10 @@ import cz.msebera.android.httpclient.Header;
 public class ImageUploadActivity extends ActionBarActivity implements LocationListener {
     private static final String TAG  = "ImageUploadActivity";
     private static final int PICK_IMAGE = 1;
-    private static final int CAMERA_REQUEST = 2;
     private static final int CAMERA = 3;
     Context context = this;
     private String streamKey;
     private EditText text;
-    private Uri imgUri;
     private final static int MIN_TIME = 5000;
     private final static float MIN_DIST = 5;
     LocationManager locationManager;
@@ -59,28 +57,6 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         setContentView(R.layout.activity_image_upload);
         streamKey = getIntent().getStringExtra("streamKey");
         final String streamName = getIntent().getStringExtra("streamName");
-
-        final Bitmap bmp = getIntent().getParcelableExtra("bitmap");
-        if (bmp != null){
-            ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
-            imgView.setImageBitmap(bmp);
-
-            Button uploadButton = (Button) findViewById(R.id.upload_to_server);
-            uploadButton.setClickable(true);
-            uploadButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Get photo caption
-                    String photoCaption = text.getText().toString();
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                    byte[] b = baos.toByteArray();
-                    postToServer(b, photoCaption);
-                }
-            });
-        }
-
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         txvAlert = (TextView) findViewById(R.id.txv_alert);
@@ -105,25 +81,10 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
                 }
         );
 
-        Button useCameraButton = (Button) findViewById(R.id.btn_use_camera);
-        useCameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-                String fname = "p" + System.currentTimeMillis() + ".jpg";
-                imgUri = Uri.parse("file://" + dir + "/" + fname);
-
-                Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
-                startActivityForResult(i, CAMERA_REQUEST);
-            }
-        });
-
         Button cameraButton = (Button) findViewById(R.id.btn_camera);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Utils.gotoCameraActivity(ImageUploadActivity.this, streamKey, streamName);
                 Utils.gotoCameraActivity(ImageUploadActivity.this, CAMERA);
             }
         });
@@ -190,26 +151,7 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
                     }
             );
         }
-        else if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            final Bitmap bitmapImage = BitmapFactory.decodeFile(imgUri.getPath());
-            ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
-            imgView.setImageBitmap(bitmapImage);
 
-            Button uploadButton = (Button) findViewById(R.id.upload_to_server);
-            uploadButton.setClickable(true);
-            uploadButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Get photo caption
-                    String photoCaption = text.getText().toString();
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                    byte[] b = baos.toByteArray();
-                    postToServer(b, photoCaption);
-                }
-            });
-        }
         else if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
             byte[] byteArr = data.getByteArrayExtra("byteArr");
             final Bitmap bitmapImage = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.length);
