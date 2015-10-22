@@ -26,10 +26,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import apt.connexusfall15.R;
 import apt.connexusfall15.adapter.ImageAdapter;
+import apt.connexusfall15.adapter.ImageWithTextAdapter;
 import apt.connexusfall15.utils.Utils;
 import cz.msebera.android.httpclient.Header;
 
@@ -44,7 +46,9 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
     Context context = this;
     int pictures_viewed = 0;
     ArrayList<String> imgUrls = new ArrayList<String>();
+    ArrayList<String> distanceList = new ArrayList<>();
     JSONArray displayImgUrl = new JSONArray();
+    JSONArray arrDistance = new JSONArray();
     JSONArray arrStreamKey = new JSONArray();
     JSONArray arrStreamName = new JSONArray();
     ArrayList<String> streamKeyList = new ArrayList<>();
@@ -79,8 +83,10 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                 try{
                     if( pictures_viewed <= displayImgUrl.length()) {
                         imgUrls.clear();
+                        distanceList.clear();
                         for (int i = pictures_viewed; i < displayImgUrl.length() && i < pictures_viewed+16; i++) {
                             imgUrls.add(displayImgUrl.getString(i));
+                            distanceList.add(arrDistance.getString(i));
                             streamKeyList.add(arrStreamKey.getString(i));
                             streamNameList.add(arrStreamName.getString(i));
                         }
@@ -89,7 +95,7 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                     System.out.println("JSON Error");
                 }
                 GridView gridview = (GridView) findViewById(R.id.gridview_search_nearby);
-                gridview.setAdapter(new ImageAdapter(context, imgUrls));
+                gridview.setAdapter(new ImageWithTextAdapter(context, imgUrls, distanceList));
                 gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View v,
@@ -131,16 +137,18 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                 try {
                     JSONObject jObject = new JSONObject(new String(response));
                     displayImgUrl = jObject.getJSONArray("displayImages");
+                    arrDistance = jObject.getJSONArray("distanceList");
                     arrStreamKey = jObject.getJSONArray("streamKeyList");
                     arrStreamName = jObject.getJSONArray("streamNameList");
 
                     for (int i = 0; i < displayImgUrl.length() && i<16; i++) {
                         imgUrls.add(displayImgUrl.getString(i));
+                        distanceList.add(arrDistance.getString(i));
                         streamKeyList.add(arrStreamKey.getString(i));
                         streamNameList.add(arrStreamName.getString(i));
                     }
                     GridView gridview = (GridView) findViewById(R.id.gridview_search_nearby);
-                    gridview.setAdapter(new ImageAdapter(context, imgUrls));
+                    gridview.setAdapter(new ImageWithTextAdapter(context, imgUrls, distanceList));
                     gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
@@ -149,7 +157,7 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                         }
                     });
                 } catch (JSONException j) {
-                    System.out.println("JSON Error");
+                    System.out.println("JSON Error Post to Server");
                 }
             }
             @Override
