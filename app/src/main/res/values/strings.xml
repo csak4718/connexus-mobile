@@ -41,10 +41,13 @@
     <string name="searchNearby">Search Nearby Streams</string>
     <string name="title_activity_search_nearby">SearchNearbyActivity</string>
     <string name="mySubscribedStreams">My subscribed streams</string>
-    <string name="title_activity_my_subscribed_streams">MySubscribedStreamsActivity</string>
+
     <string name="openGPS">Please open GPS</string>
     <string name="title_activity_camera">CameraActivity</string>
     <string name="backToViewAll">Back to View All Streams</string>
     <string name="more">More</string>
+    <string name="capture">Capture</string>
+    <string name="confirm">Use this</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 
 import android.support.v7.app.ActionBarActivity;
@@ -15,7 +17,11 @@ import android.view.View;
 
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+
+import java.io.IOException;
 
 import apt.connexusfall15.R;
 import apt.connexusfall15.utils.CameraPreview;
@@ -25,16 +31,25 @@ public class CameraActivity extends ActionBarActivity {
     private final static String TAG = "CameraActivity";
     Context context = this;
     private Camera mCamera;
+    private FrameLayout preview;
+    private Button confirmButton;
+    private Button cancelButton;
 
+    private Button captureButton;
+    private CameraPreview mPreview;
+//    private Camera.ShutterCallback shutter = new Camera.ShutterCallback() {
+//        @Override
+//        public void onShutter() {
+//            mCamera.stopPreview();
+//        }
+//    };
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
+        public void onPictureTaken(final byte[] data, final Camera camera) {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("byteArr", data);
             setResult(RESULT_OK, returnIntent);
-            finish();
-            releaseCamera();
         }
     };
 
@@ -42,6 +57,22 @@ public class CameraActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        confirmButton = (Button) findViewById(R.id.button_confirm);
+        cancelButton = (Button) findViewById(R.id.button_cancel);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                releaseCamera();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCamera.startPreview();
+            }
+        });
 
         boolean hasCamera = checkCameraHardware(context);
         if (hasCamera){
@@ -49,18 +80,19 @@ public class CameraActivity extends ActionBarActivity {
             mCamera = getCameraInstance();
             if (mCamera != null){
                 // Create our Preview view and set it as the content of our activity.
-                CameraPreview mPreview = new CameraPreview(context, mCamera);
-                FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+                mPreview = new CameraPreview(context, mCamera);
+                preview = (FrameLayout) findViewById(R.id.camera_preview);
                 preview.addView(mPreview);
 
                 // Add a listener to the Capture button
-                Button captureButton = (Button) findViewById(R.id.button_capture);
+                captureButton = (Button) findViewById(R.id.button_capture);
                 captureButton.setOnClickListener(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 // get an image from the camera
                                 mCamera.takePicture(null, null, mPicture);
+
                             }
                         }
                 );
@@ -80,7 +112,6 @@ public class CameraActivity extends ActionBarActivity {
             mCamera = null;
         }
     }
-
 
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance(){
