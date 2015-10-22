@@ -57,7 +57,29 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
         streamKey = getIntent().getStringExtra("streamKey");
-        String streamName = getIntent().getStringExtra("streamName");
+        final String streamName = getIntent().getStringExtra("streamName");
+
+        final Bitmap bmp = getIntent().getParcelableExtra("bitmap");
+        if (bmp != null){
+            ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
+            imgView.setImageBitmap(bmp);
+
+            Button uploadButton = (Button) findViewById(R.id.upload_to_server);
+            uploadButton.setClickable(true);
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Get photo caption
+                    String photoCaption = text.getText().toString();
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                    byte[] b = baos.toByteArray();
+                    postToServer(b, photoCaption);
+                }
+            });
+        }
+
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         txvAlert = (TextView) findViewById(R.id.txv_alert);
@@ -100,7 +122,7 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoCameraActivity(ImageUploadActivity.this);
+                Utils.gotoCameraActivity(ImageUploadActivity.this, streamKey, streamName);
             }
         });
     }
