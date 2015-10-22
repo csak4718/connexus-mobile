@@ -2,6 +2,7 @@ package apt.connexusfall15.utils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 import apt.connexusfall15.activity.CameraActivity;
 import apt.connexusfall15.activity.ViewSingleStreamActivity;
@@ -55,8 +56,20 @@ public class Utils {
 //        activity.startActivity(it);
 //    }
 
-    public static void gotoCameraActivity(Activity activity){
+    public static void gotoCameraActivity(Activity activity, String streamKey, String streamName){
         Intent it = new Intent(activity, CameraActivity.class);
+        it.putExtra("streamKey", streamKey);
+        it.putExtra("streamName", streamName);
         activity.startActivity(it);
+    }
+
+    public static void gobacktoImageUploadActivity(Activity activity, String streamKey, String streamName, Bitmap bmp){
+        Intent it = new Intent(activity, ImageUploadActivity.class);
+        it.putExtra("streamKey", streamKey);
+        it.putExtra("streamName", streamName);
+        it.putExtra("bitmap", bmp);
+        activity.startActivity(it);
+        activity.finish();
+
     }
 }
