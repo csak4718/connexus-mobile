@@ -42,17 +42,20 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
     private double longitude;
     private TextView txvAlert;
     Context context = this;
+    int pictures_viewed = 0;
+    ArrayList<String> imgUrls = new ArrayList<String>();
+    JSONArray displayImgUrl = new JSONArray();
+    JSONArray arrStreamKey = new JSONArray();
+    JSONArray arrStreamName = new JSONArray();
+    ArrayList<String> streamKeyList = new ArrayList<>();
+    ArrayList<String> streamNameList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_nearby);
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         txvAlert = (TextView) findViewById(R.id.txv_alert);
-
-
 
     }
 
@@ -61,11 +64,40 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
         super.onResume();
         final String userEmail = getIntent().getStringExtra("userEmail");
         Button viewAllStreamsButton = (Button) findViewById(R.id.button_view_all_streams);
+        Button viewmorePicture = (Button) findViewById(R.id.btn_more_pic_nearby);
         viewAllStreamsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Utils.gotoViewAllStreamsActivity(SearchNearbyActivity.this, userEmail);
                 finish();
+            }
+        });
+
+        viewmorePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pictures_viewed = pictures_viewed+16;
+                try{
+                    if( pictures_viewed <= displayImgUrl.length()) {
+                        imgUrls.clear();
+                        for (int i = pictures_viewed; i < displayImgUrl.length() && i < pictures_viewed+16; i++) {
+                            imgUrls.add(displayImgUrl.getString(i));
+                            streamKeyList.add(arrStreamKey.getString(i));
+                            streamNameList.add(arrStreamName.getString(i));
+                        }
+                    }
+                }catch(JSONException j){
+                    System.out.println("JSON Error");
+                }
+                GridView gridview = (GridView) findViewById(R.id.gridview_search_nearby);
+                gridview.setAdapter(new ImageAdapter(context, imgUrls));
+                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View v,
+                                            int position, long id) {
+                        Utils.gotoViewSingleStreamActivity(SearchNearbyActivity.this, streamKeyList.get(position), streamNameList.get(position), userEmail);
+                    }
+                });
             }
         });
 
@@ -96,16 +128,14 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                final ArrayList<String> imgUrls = new ArrayList<String>();
-                final ArrayList<String> streamKeyList = new ArrayList<>();
-                final ArrayList<String> streamNameList = new ArrayList<String>();
+//                final ArrayList<String> imgUrls = new ArrayList<String>();
                 try {
                     JSONObject jObject = new JSONObject(new String(response));
-                    JSONArray displayImgUrl = jObject.getJSONArray("displayImages");
-                    JSONArray arrStreamKey = jObject.getJSONArray("streamKeyList");
-                    JSONArray arrStreamName = jObject.getJSONArray("streamNameList");
+                    displayImgUrl = jObject.getJSONArray("displayImages");
+                    arrStreamKey = jObject.getJSONArray("streamKeyList");
+                    arrStreamName = jObject.getJSONArray("streamNameList");
 
-                    for (int i = 0; i < displayImgUrl.length(); i++) {
+                    for (int i = 0; i < displayImgUrl.length() && i<16; i++) {
                         imgUrls.add(displayImgUrl.getString(i));
                         streamKeyList.add(arrStreamKey.getString(i));
                         streamNameList.add(arrStreamName.getString(i));

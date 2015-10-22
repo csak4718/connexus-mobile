@@ -45,5 +45,6 @@
     <string name="openGPS">Please open GPS</string>
     <string name="title_activity_camera">CameraActivity</string>
     <string name="backToViewAll">Back to View All Streams</string>
+    <string name="more">More</string>
 
 </resources>

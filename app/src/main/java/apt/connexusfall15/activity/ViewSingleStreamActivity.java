@@ -37,7 +37,9 @@ import cz.msebera.android.httpclient.Header;
 public class ViewSingleStreamActivity extends ActionBarActivity {
     Context context = this;
     private static final String TAG  = "ViewSingleStreamActivity";
-
+    int pictures_viewed = 0;
+    ArrayList<String> imageURLs = new ArrayList<String>();
+    JSONArray displayImages = new JSONArray();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +50,52 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
 
         TextView txv_streamName = (TextView) findViewById(R.id.stream_name);
         txv_streamName.setText("View A Stream: "+streamName);
+        Button viewmorePicture = (Button) findViewById(R.id.btn_more_pic_single_stream);
         Button viewAllStreams = (Button) findViewById(R.id.btn_view_all_streams);
         viewAllStreams.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Utils.gotoViewAllStreamsActivity(ViewSingleStreamActivity.this, userEmail);
                 finish();
+            }
+        });
+        viewmorePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pictures_viewed = pictures_viewed+16;
+                try{
+                    if( pictures_viewed <= displayImages.length()) {
+                        imageURLs.clear();
+                        for (int i = pictures_viewed; i < displayImages.length() && i < pictures_viewed+16; i++) {
+                        imageURLs.add(displayImages.getString(i));
+//                        imageCaps.add(displayCaption.getString(i));
+                        System.out.println(displayImages.getString(i));
+                    }
+                    }
+                }
+                catch(JSONException j) {
+                    System.out.println("JSON Error on More");
+                }
+
+                GridView gridview = (GridView) findViewById(R.id.gridview);
+                gridview.setAdapter(new ImageAdapter(context, imageURLs));
+                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View v,
+                                            int position, long id) {
+
+//                            Toast.makeText(context, imageCaps.get(position), Toast.LENGTH_SHORT).show();
+
+                        Dialog imageDialog = new Dialog(context);
+                        imageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        imageDialog.setContentView(R.layout.thumbnail);
+                        ImageView image = (ImageView) imageDialog.findViewById(R.id.thumbnail_IMAGEVIEW);
+
+                        Picasso.with(context).load(imageURLs.get(position)).resize(300, 300).centerCrop().into(image);
+
+                        imageDialog.show();
+                    }
+                });
             }
         });
         final Button imageUpload = (Button) findViewById(R.id.btn_to_upload_activity);
@@ -73,11 +115,11 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
         httpClient.get(request_url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                final ArrayList<String> imageURLs = new ArrayList<String>();
+//                final ArrayList<String> imageURLs = new ArrayList<String>();
 //                final ArrayList<String> imageCaps = new ArrayList<String>();
                 try {
                     JSONObject jObject = new JSONObject(new String(response));
-                    JSONArray displayImages = jObject.getJSONArray("displayImages");
+                    displayImages = jObject.getJSONArray("displayImages");
                     String ownerEmail = jObject.getString("ownerEmail");
 //                    Log.d(TAG, "UserEmail: "+userEmail);
                     if (userEmail != null){
@@ -87,8 +129,7 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
                     else imageUpload.setVisibility(View.GONE);
 
 //                    JSONArray displayCaption = jObject.getJSONArray("imageCaptionList");
-
-                    for (int i = 0; i < displayImages.length(); i++) {
+                    for (int i = 0; i < displayImages.length() && i < 16; i++) {
                         imageURLs.add(displayImages.getString(i));
 //                        imageCaps.add(displayCaption.getString(i));
                         System.out.println(displayImages.getString(i));
