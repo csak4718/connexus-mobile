@@ -72,4 +72,9 @@ public class Utils {
         activity.finish();
 
     }
+
+    public static void gotoCameraActivity(Activity activity, int request_code){
+        Intent it = new Intent(activity, CameraActivity.class);
+        activity.startActivityForResult(it, request_code);
+    }
 }

@@ -41,6 +41,7 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
     private static final String TAG  = "ImageUploadActivity";
     private static final int PICK_IMAGE = 1;
     private static final int CAMERA_REQUEST = 2;
+    private static final int CAMERA = 3;
     Context context = this;
     private String streamKey;
     private EditText text;
@@ -122,7 +123,8 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoCameraActivity(ImageUploadActivity.this, streamKey, streamName);
+//                Utils.gotoCameraActivity(ImageUploadActivity.this, streamKey, streamName);
+                Utils.gotoCameraActivity(ImageUploadActivity.this, CAMERA);
             }
         });
     }
@@ -207,6 +209,28 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
                     postToServer(b, photoCaption);
                 }
             });
+        }
+        else if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
+            byte[] byteArr = data.getByteArrayExtra("byteArr");
+            final Bitmap bitmapImage = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.length);
+            ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
+            imgView.setImageBitmap(bitmapImage);
+
+            Button uploadButton = (Button) findViewById(R.id.upload_to_server);
+            uploadButton.setClickable(true);
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Get photo caption
+                    String photoCaption = text.getText().toString();
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                    byte[] b = baos.toByteArray();
+                    postToServer(b, photoCaption);
+                }
+            });
+
         }
     }
 
