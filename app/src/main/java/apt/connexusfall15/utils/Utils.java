@@ -30,11 +30,13 @@ public class Utils {
         activity.startActivity(it);
     }
 
-    public static void gotoImageUploadActivity(Activity activity, String streamKey, String streamName){
+    public static void gotoImageUploadActivity(Activity activity, String streamKey, String streamName, String userEmail){
         Intent it = new Intent(activity, ImageUploadActivity.class);
         it.putExtra("streamKey", streamKey);
         it.putExtra("streamName", streamName);
+        it.putExtra("userEmail", userEmail);
         activity.startActivity(it);
+        activity.finish();
     }
 
     public static void gotoSearchActivity(Activity activity, String searchTerm, String userEmail){

@@ -51,13 +51,16 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
     private double latitude;
     private double longitude;
     private TextView txvAlert;
+    private String userEmail;
+    private String streamName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
         streamKey = getIntent().getStringExtra("streamKey");
-        final String streamName = getIntent().getStringExtra("streamName");
+        streamName = getIntent().getStringExtra("streamName");
+        userEmail = getIntent().getStringExtra("userEmail");
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         txvAlert = (TextView) findViewById(R.id.txv_alert);
@@ -114,6 +117,12 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         locationManager.removeUpdates(this);
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Utils.gotoViewSingleStreamActivity(ImageUploadActivity.this, streamKey, streamName, userEmail);
+    }
+
     public Bitmap rotateBitmap(Bitmap source, float angle)
     {
         Matrix matrix = new Matrix();
@@ -155,6 +164,7 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
                             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                             byte[] b = baos.toByteArray();
                             postToServer(b, photoCaption); // argument must be b
+//                            finish();
                         }
                     }
             );
@@ -179,6 +189,7 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
                     bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                     byte[] b = baos.toByteArray();
                     postToServer(b, photoCaption);
+//                    finish();
                 }
             });
 
@@ -202,6 +213,8 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 Log.w("async", "success!!!!");
                 Toast.makeText(context, "Upload Successful", Toast.LENGTH_SHORT).show();
+//                finish();
+                Utils.gotoViewSingleStreamActivity(ImageUploadActivity.this, streamKey, streamName, userEmail);
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
