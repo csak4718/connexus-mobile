@@ -86,6 +86,8 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                     if( pictures_viewed <= displayImgUrl.length()) {
                         imgUrls.clear();
                         distanceList.clear();
+                        streamKeyList.clear();
+                        streamNameList.clear();
                         for (int i = pictures_viewed; i < displayImgUrl.length() && i < pictures_viewed+16; i++) {
                             imgUrls.add(displayImgUrl.getString(i));
                             distanceList.add(arrDistance.getString(i));

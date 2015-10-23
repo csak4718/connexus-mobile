@@ -31,7 +31,14 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends ActionBarActivity {
     private static final String TAG  = "Search Activity";
     Context context = this;
-
+    int result_viewed = 0;
+    JSONArray displayCoverUrl = new JSONArray();
+    JSONArray arrStreamKey = new JSONArray();
+    JSONArray arrStreamName = new JSONArray();
+    ArrayList<String> coverUrls = new ArrayList<String>();
+    ArrayList<String> streamKeyList = new ArrayList<>();
+    ArrayList<String> streamNameList = new ArrayList<String>();
+    int search_result =0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +49,44 @@ public class SearchActivity extends ActionBarActivity {
 
         final EditText edt_search = (EditText) findViewById(R.id.edt_search);
         Button searchButton = (Button) findViewById(R.id.btn_search);
+        Button MoreResult = (Button) findViewById(R.id.btn_more_results);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchTerm = edt_search.getText().toString();
                 search(searchTerm, userEmail);
+            }
+        });
+        MoreResult.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (search_result == 1){
+                    result_viewed = result_viewed + 8;
+                    try {
+                        if(result_viewed+8 <= displayCoverUrl.length()){
+                            for (int i = result_viewed; i < displayCoverUrl.length() && i < result_viewed + 8; i++) {
+                                coverUrls.clear();
+                                streamKeyList.clear();
+                                streamNameList.clear();
+                                coverUrls.add(displayCoverUrl.getString(i));
+                                streamKeyList.add(arrStreamKey.getString(i));
+                                streamNameList.add(arrStreamName.getString(i));
+//                              System.out.println(displayCoverUrl.getString(i));
+                            }
+                        }
+                    }catch(JSONException j) {
+                        System.out.println("JSON Error");
+                    }
+                    GridView gridview = (GridView) findViewById(R.id.gridview_searchStreams);
+                    gridview.setAdapter(new ImageAdapter(context, coverUrls));
+                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View v,
+                                                int position, long id) {
+                            Utils.gotoViewSingleStreamActivity(SearchActivity.this, streamKeyList.get(position), streamNameList.get(position), userEmail);
+                        }
+                    });
+                }
             }
         });
     }
@@ -57,24 +97,25 @@ public class SearchActivity extends ActionBarActivity {
         httpClient.get(request_url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                final ArrayList<String> coverUrls = new ArrayList<String>();
-                final ArrayList<String> streamKeyList = new ArrayList<>();
-                final ArrayList<String> streamNameList = new ArrayList<String>();
                 try {
                     JSONObject jObject = new JSONObject(new String(responseBody));
-                    JSONArray displayCoverUrl = jObject.getJSONArray("displayStreams");
-                    JSONArray arrStreamKey = jObject.getJSONArray("streamKeyList");
-                    JSONArray arrStreamName = jObject.getJSONArray("streamNameList");
+                    displayCoverUrl = jObject.getJSONArray("displayStreams");
+                    arrStreamKey = jObject.getJSONArray("streamKeyList");
+                    arrStreamName = jObject.getJSONArray("streamNameList");
 
                     TextView txvResult = (TextView) findViewById(R.id.txv_result);
                     txvResult.setText(String.valueOf(displayCoverUrl.length()) + "results for "+ searchTerm + ",\nclick on an image to view stream");
 
-                    for (int i = 0; i < displayCoverUrl.length(); i++) {
+                    for (int i = 0; i < displayCoverUrl.length() && i < 8 ; i++) {
+                        coverUrls.clear();
+                        streamKeyList.clear();
+                        streamNameList.clear();
                         coverUrls.add(displayCoverUrl.getString(i));
                         streamKeyList.add(arrStreamKey.getString(i));
                         streamNameList.add(arrStreamName.getString(i));
 //                        System.out.println(displayCoverUrl.getString(i));
                     }
+                    search_result = 1;
                     GridView gridview = (GridView) findViewById(R.id.gridview_searchStreams);
                     gridview.setAdapter(new ImageAdapter(context, coverUrls));
                     gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
