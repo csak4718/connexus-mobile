@@ -50,6 +50,8 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
     ArrayList<String> streamKeyList = new ArrayList<>();
     ArrayList<String> streamNameList = new ArrayList<String>();
 
+    int first_set_viewed = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +112,6 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
             longitude = location.getLongitude();
 //            Log.d(TAG, "Latitude: " + String.valueOf(latitude));
 //            Log.d(TAG, "Longitude: " + String.valueOf(longitude));
-
             postToServer(userEmail);
 
         }
@@ -134,11 +135,13 @@ public class SearchNearbyActivity extends ActionBarActivity implements LocationL
                     displayImgUrl = jObject.getJSONArray("displayImages");
                     arrStreamKey = jObject.getJSONArray("streamKeyList");
                     arrStreamName = jObject.getJSONArray("streamNameList");
-
-                    for (int i = 0; i < displayImgUrl.length() && i<16; i++) {
-                        imgUrls.add(displayImgUrl.getString(i));
-                        streamKeyList.add(arrStreamKey.getString(i));
-                        streamNameList.add(arrStreamName.getString(i));
+                    if (pictures_viewed == 0 && first_set_viewed == 0) {
+                        first_set_viewed = 1;
+                        for (int i = 0; i < displayImgUrl.length() && i < 16; i++) {
+                            imgUrls.add(displayImgUrl.getString(i));
+                            streamKeyList.add(arrStreamKey.getString(i));
+                            streamNameList.add(arrStreamName.getString(i));
+                        }
                     }
                     GridView gridview = (GridView) findViewById(R.id.gridview_search_nearby);
                     gridview.setAdapter(new ImageAdapter(context, imgUrls));
