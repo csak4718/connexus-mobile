@@ -13,11 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/findStreams"/>
-    <Button
-        android:id="@+id/btn_search"
+    <LinearLayout
+        android:id="@+id/btn_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search"/>
+        android:visibility="visible">
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search"/>
+
+        <Button
+            android:id="@+id/btn_more_results"
+            android:text="@string/more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
     <TextView
         android:id="@+id/txv_result"
         android:layout_width="match_parent"
