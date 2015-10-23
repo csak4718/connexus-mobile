@@ -2,12 +2,12 @@ package apt.connexusfall15.utils;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+
 
 import apt.connexusfall15.activity.CameraActivity;
 import apt.connexusfall15.activity.ViewSingleStreamActivity;
 import apt.connexusfall15.activity.ImageUploadActivity;
-import apt.connexusfall15.activity.MySubscribedStreamsActivity;
+
 import apt.connexusfall15.activity.SearchActivity;
 import apt.connexusfall15.activity.SearchNearbyActivity;
 import apt.connexusfall15.activity.ViewAllStreamsActivity;
@@ -50,26 +50,8 @@ public class Utils {
         activity.startActivity(it);
     }
 
-//    public static void gotoMySubscribedStreamsActivity(Activity activity, String userEmail){
-//        Intent it = new Intent(activity, MySubscribedStreamsActivity.class);
-//        it.putExtra("userEmail", userEmail);
-//        activity.startActivity(it);
-//    }
-
-    public static void gotoCameraActivity(Activity activity, String streamKey, String streamName){
+    public static void gotoCameraActivity(Activity activity, int request_code){
         Intent it = new Intent(activity, CameraActivity.class);
-        it.putExtra("streamKey", streamKey);
-        it.putExtra("streamName", streamName);
-        activity.startActivity(it);
-    }
-
-    public static void gobacktoImageUploadActivity(Activity activity, String streamKey, String streamName, Bitmap bmp){
-        Intent it = new Intent(activity, ImageUploadActivity.class);
-        it.putExtra("streamKey", streamKey);
-        it.putExtra("streamName", streamName);
-        it.putExtra("bitmap", bmp);
-        activity.startActivity(it);
-        activity.finish();
-
+        activity.startActivityForResult(it, request_code);
     }
 }

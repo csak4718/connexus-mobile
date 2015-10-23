@@ -24,11 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/choose_from_library"
             />
-        <Button
-            android:id="@+id/btn_use_camera"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/useCamera"/>
+
         <Button
             android:id="@+id/btn_camera"
             android:layout_width="match_parent"

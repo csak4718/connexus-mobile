@@ -55,7 +55,6 @@ public class ViewSingleStreamActivity extends ActionBarActivity {
         viewAllStreams.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Utils.gotoViewAllStreamsActivity(ViewSingleStreamActivity.this, userEmail);
                 finish();
             }
         });
