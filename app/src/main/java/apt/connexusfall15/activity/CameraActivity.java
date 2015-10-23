@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import apt.connexusfall15.R;
 import apt.connexusfall15.utils.CameraPreview;
+import apt.connexusfall15.utils.Utils;
 
 
 public class CameraActivity extends ActionBarActivity {
@@ -37,6 +38,7 @@ public class CameraActivity extends ActionBarActivity {
 
     private Button captureButton;
     private CameraPreview mPreview;
+    private String userEmail;
 //    private Camera.ShutterCallback shutter = new Camera.ShutterCallback() {
 //        @Override
 //        public void onShutter() {
@@ -57,8 +59,22 @@ public class CameraActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        userEmail = getIntent().getStringExtra("userEmail");
+
+        Button viewAllButton = (Button) findViewById(R.id.btn_viewAll);
+        viewAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.gotoViewAllStreamsActivity(CameraActivity.this, userEmail);
+                finish();
+                releaseCamera();
+            }
+        });
+
         confirmButton = (Button) findViewById(R.id.button_confirm);
         cancelButton = (Button) findViewById(R.id.button_cancel);
+        confirmButton.setEnabled(false);
+        cancelButton.setEnabled(false);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +87,9 @@ public class CameraActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 mCamera.startPreview();
+                confirmButton.setEnabled(false);
+                cancelButton.setEnabled(false);
+                captureButton.setEnabled(true);
             }
         });
 
@@ -92,6 +111,9 @@ public class CameraActivity extends ActionBarActivity {
                             public void onClick(View v) {
                                 // get an image from the camera
                                 mCamera.takePicture(null, null, mPicture);
+                                confirmButton.setEnabled(true);
+                                cancelButton.setEnabled(true);
+                                captureButton.setEnabled(false);
 
                             }
                         }

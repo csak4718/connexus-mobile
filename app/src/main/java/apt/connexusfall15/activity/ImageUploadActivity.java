@@ -89,7 +89,7 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.gotoCameraActivity(ImageUploadActivity.this, CAMERA);
+                Utils.gotoCameraActivity(ImageUploadActivity.this, CAMERA, userEmail);
             }
         });
     }
