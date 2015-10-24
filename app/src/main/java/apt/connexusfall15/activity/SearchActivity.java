@@ -64,10 +64,10 @@ public class SearchActivity extends ActionBarActivity {
                     result_viewed = result_viewed + 8;
                     try {
                         if(result_viewed+8 <= displayCoverUrl.length()){
+                            coverUrls.clear();
+                            streamKeyList.clear();
+                            streamNameList.clear();
                             for (int i = result_viewed; i < displayCoverUrl.length() && i < result_viewed + 8; i++) {
-                                coverUrls.clear();
-                                streamKeyList.clear();
-                                streamNameList.clear();
                                 coverUrls.add(displayCoverUrl.getString(i));
                                 streamKeyList.add(arrStreamKey.getString(i));
                                 streamNameList.add(arrStreamName.getString(i));
@@ -107,9 +107,6 @@ public class SearchActivity extends ActionBarActivity {
                     txvResult.setText(String.valueOf(displayCoverUrl.length()) + " results for "+ searchTerm + ",\nclick on an image to view stream");
 
                     for (int i = 0; i < displayCoverUrl.length() && i < 8 ; i++) {
-                        coverUrls.clear();
-                        streamKeyList.clear();
-                        streamNameList.clear();
                         coverUrls.add(displayCoverUrl.getString(i));
                         streamKeyList.add(arrStreamKey.getString(i));
                         streamNameList.add(arrStreamName.getString(i));
@@ -117,6 +114,7 @@ public class SearchActivity extends ActionBarActivity {
                     }
                     search_result = 1;
                     GridView gridview = (GridView) findViewById(R.id.gridview_searchStreams);
+                    Log.d("SIZE", String.valueOf(coverUrls.size()));
                     gridview.setAdapter(new ImageWithTextAdapter(context, coverUrls, streamNameList));
                     gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
