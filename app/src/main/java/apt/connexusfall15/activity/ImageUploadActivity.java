@@ -171,8 +171,9 @@ public class ImageUploadActivity extends ActionBarActivity implements LocationLi
         }
 
         else if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
-            byte[] byteArr = data.getByteArrayExtra("byteArr");
-            Bitmap bmp = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.length);
+            String path = data.getStringExtra("path");
+//            Bitmap bmp = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.length);
+            Bitmap bmp = BitmapFactory.decodeFile(path);
             final Bitmap bitmapImage = rotateBitmap(bmp, 90);
             ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
             imgView.setImageBitmap(bitmapImage);

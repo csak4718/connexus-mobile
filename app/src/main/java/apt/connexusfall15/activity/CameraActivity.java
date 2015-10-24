@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +20,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import apt.connexusfall15.R;
 import apt.connexusfall15.utils.CameraPreview;
@@ -49,8 +55,34 @@ public class CameraActivity extends ActionBarActivity {
 
         @Override
         public void onPictureTaken(final byte[] data, final Camera camera) {
+            File pictureFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+            if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {
+                Toast.makeText(context, "Can't create directory to save image.",
+                        Toast.LENGTH_LONG).show();
+                return;
+
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
+            String date = dateFormat.format(new Date());
+            String photoFile = "Picture_" + date + ".jpg";
+
+            String filename = pictureFileDir.getPath() + File.separator + photoFile;
+
+            File pictureFile = new File(filename);
+
+            try {
+                FileOutputStream fos = new FileOutputStream(pictureFile);
+                fos.write(data);
+                fos.close();
+                Toast.makeText(context, "New Image saved:" + photoFile,
+                        Toast.LENGTH_LONG).show();
+            } catch (Exception error) {
+                Toast.makeText(context, "Image could not be saved.",
+                        Toast.LENGTH_LONG).show();
+            }
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("byteArr", data);
+            returnIntent.putExtra("path", filename);
             setResult(RESULT_OK, returnIntent);
         }
     };
