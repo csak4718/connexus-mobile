@@ -8,6 +8,15 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
+    <TextView
+        android:text="@string/connexus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:textColor="@color/darkred"
+        />
+
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview_viewAllStreams"
         android:layout_width="match_parent"

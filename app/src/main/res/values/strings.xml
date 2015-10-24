@@ -49,5 +49,6 @@
     <string name="capture">Capture</string>
     <string name="confirm">Use this</string>
     <string name="cancel">Cancel</string>
+    <string name="connexus">Connexus</string>
 
 </resources>

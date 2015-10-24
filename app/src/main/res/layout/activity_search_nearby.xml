@@ -7,6 +7,15 @@
     tools:context="apt.connexusfall15.activity.SearchNearbyActivity"
     >
     <TextView
+        android:text="@string/connexus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:textColor="@color/darkred"
+        android:paddingBottom="10sp"
+        />
+    <TextView
         android:id="@+id/txv_alert"
         android:visibility="gone"
         android:layout_width="match_parent"

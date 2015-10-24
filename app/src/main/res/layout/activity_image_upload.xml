@@ -13,10 +13,22 @@
         android:orientation="vertical"
         android:focusable="true"
         android:focusableInTouchMode="true">
+
+        <TextView
+            android:text="@string/connexus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:textColor="@color/darkred"
+            android:paddingBottom="10sp"
+            />
+
         <TextView
             android:id="@+id/txv_stream_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:gravity="center"/>
         <Button
             android:id="@+id/choose_from_library"
