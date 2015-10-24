@@ -23,11 +23,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import apt.connexusfall15.R;
-import apt.connexusfall15.adapter.ImageAdapter;
+import apt.connexusfall15.adapter.ImageWithTextAdapter;
 import apt.connexusfall15.utils.Utils;
 import cz.msebera.android.httpclient.Header;
 
-// TODO: More button. And show stream name under each cover url
+
 public class SearchActivity extends ActionBarActivity {
     private static final String TAG  = "Search Activity";
     Context context = this;
@@ -78,7 +78,7 @@ public class SearchActivity extends ActionBarActivity {
                         System.out.println("JSON Error");
                     }
                     GridView gridview = (GridView) findViewById(R.id.gridview_searchStreams);
-                    gridview.setAdapter(new ImageAdapter(context, coverUrls));
+                    gridview.setAdapter(new ImageWithTextAdapter(context, coverUrls, streamNameList));
                     gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
@@ -104,7 +104,7 @@ public class SearchActivity extends ActionBarActivity {
                     arrStreamName = jObject.getJSONArray("streamNameList");
 
                     TextView txvResult = (TextView) findViewById(R.id.txv_result);
-                    txvResult.setText(String.valueOf(displayCoverUrl.length()) + "results for "+ searchTerm + ",\nclick on an image to view stream");
+                    txvResult.setText(String.valueOf(displayCoverUrl.length()) + " results for "+ searchTerm + ",\nclick on an image to view stream");
 
                     for (int i = 0; i < displayCoverUrl.length() && i < 8 ; i++) {
                         coverUrls.clear();
@@ -117,7 +117,7 @@ public class SearchActivity extends ActionBarActivity {
                     }
                     search_result = 1;
                     GridView gridview = (GridView) findViewById(R.id.gridview_searchStreams);
-                    gridview.setAdapter(new ImageAdapter(context, coverUrls));
+                    gridview.setAdapter(new ImageWithTextAdapter(context, coverUrls, streamNameList));
                     gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v,
