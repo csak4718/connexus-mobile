@@ -75,8 +75,8 @@ public class CameraActivity extends ActionBarActivity {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
-                Toast.makeText(context, "New Image saved:" + photoFile,
-                        Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "New Image saved:" + photoFile,
+//                        Toast.LENGTH_LONG).show();
             } catch (Exception error) {
                 Toast.makeText(context, "Image could not be saved.",
                         Toast.LENGTH_LONG).show();
