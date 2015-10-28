@@ -63,7 +63,7 @@ public class SearchActivity extends ActionBarActivity {
                 if (search_result == 1){
                     result_viewed = result_viewed + 8;
                     try {
-                        if(result_viewed+8 <= displayCoverUrl.length()){
+                        if(result_viewed <= displayCoverUrl.length()){
                             coverUrls.clear();
                             streamKeyList.clear();
                             streamNameList.clear();
@@ -105,7 +105,9 @@ public class SearchActivity extends ActionBarActivity {
 
                     TextView txvResult = (TextView) findViewById(R.id.txv_result);
                     txvResult.setText(String.valueOf(displayCoverUrl.length()) + " results for "+ searchTerm + ",\nclick on an image to view stream");
-
+                    coverUrls.clear();
+                    streamKeyList.clear();
+                    streamNameList.clear();
                     for (int i = 0; i < displayCoverUrl.length() && i < 8 ; i++) {
                         coverUrls.add(displayCoverUrl.getString(i));
                         streamKeyList.add(arrStreamKey.getString(i));
